@@ -3,15 +3,31 @@ import PyPDF2
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
+
 def main():
     pdf_reader = PyPDF2.PdfReader("resume.pdf")
+    create_pdf_from_page(pdf_reader.pages[0], "resume_first_page.pdf")
 
-    # create_pdf_from_page(pdf_reader.pages[0], "resume_first_page.pdf")
-    #
-    # pdf_writer = rotate_last_page_left(pdf_reader)
-    # save_pdf(pdf_writer, "resume_last_page.pdf")
+    pdf_writer = rotate_last_page_left(pdf_reader)
+    save_pdf(pdf_writer, "resume_last_page.pdf")
 
     replace_text_in_pdf("resume.pdf", "resume_replaced.pdf", "demonstrate", "exhibit", pdf_reader)
+
+    add_water_mark(pdf_reader, "merged.pdf", "watermark.pdf")
+
+
+def add_water_mark(pdf_reader, new_file_path, watermark_path):
+    """Merging pdf_reader with watermark_path and creating pdf in new_file_path"""
+    water_mark_reader = PyPDF2.PdfReader(watermark_path)
+    pdf_write = PyPDF2.PdfWriter()
+
+    # merging pages
+    for page in pdf_reader.pages:
+        page.merge_page(water_mark_reader.pages[0])
+        pdf_write.add_page(page)
+
+    with open(new_file_path, "wb") as merged_file:
+        pdf_write.write(merged_file)
 
 
 def replace_text_in_pdf(input_file, output_file, old_text, new_text, reader):
