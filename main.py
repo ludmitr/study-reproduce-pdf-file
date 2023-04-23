@@ -1,5 +1,6 @@
 # https://academy.masterschool.com/ns/books/published/swe/WritingFiles/8-UsingExternalLibraries.html
 import PyPDF2
+import re
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
@@ -43,8 +44,8 @@ def replace_text_in_pdf(input_file, output_file, old_text, new_text, reader):
         text = page.extract_text()
 
         # Replace the old text with the new text
-        text = text.replace(old_text, new_text)
-
+        # text = text.replace(old_text, new_text)
+        text = re.sub(re.compile(old_text, re.IGNORECASE), new_text, text)
         # Write the text to the new PDF
         output_canvas.setFont('Helvetica', 12)
         x, y = 50, 750
@@ -71,6 +72,7 @@ def rotate_last_page_left(pdf_reader: PyPDF2.PdfReader) -> PyPDF2.PdfWriter:
 
     pdf_writer.pages[-1].rotate(-90)
     return pdf_writer
+
 
 def create_pdf_from_page(page, path_for_new_page):
     """Creates new pdf file with one page"""
