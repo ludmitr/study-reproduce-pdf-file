@@ -44,8 +44,8 @@ def replace_text_in_pdf(input_file, output_file, old_text, new_text, reader):
         text = page.extract_text()
 
         # Replace the old text with the new text
-        # text = text.replace(old_text, new_text)
         text = re.sub(re.compile(old_text, re.IGNORECASE), new_text, text)
+
         # Write the text to the new PDF
         output_canvas.setFont('Helvetica', 12)
         x, y = 50, 750
